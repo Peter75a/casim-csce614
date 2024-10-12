@@ -97,7 +97,37 @@ class BranchPredictorPAg {
                 pht[phtIdx] = taken? (pred? 3 : (pht[phtIdx]+1)) : (pred? (pht[phtIdx]-1) : 0); //2-bit saturating counter
             } else {
                 // Please implement Automaton 3 for update
-
+                // A3 Logic
+            switch (pht[phtIdx]) 
+            {
+                case 3: // status3 strong taken
+                    if (!taken) {
+                        pht[phtIdx] = 2; // if not taken, turn to status2
+                    }
+                    // if taken, stay status3
+                    break;
+                case 2: // status2 weak taken
+                    if (taken) {
+                        // if taken, stay status2
+                        pht[phtIdx] = 2;
+                    } else {
+                        pht[phtIdx] = 1; // if not taken, turn to status1
+                    }
+                    break;
+                case 1: // status1 weak not taken
+                    if (taken) {
+                        pht[phtIdx] = 2; // if taken, turn to status2
+                    }
+                    // if not taken, stay status1
+                    break;
+                case 0: // status0 strong not taken
+                    if (taken) {
+                        pht[phtIdx] = 1; // if taken, turn to status1
+                    }
+                    // if not taken, stay status0
+                    break;
+            }
+                
             }
             bhsr[bhsrIdx] = ((bhsr[bhsrIdx] << 1) & histMask ) | (taken? 1: 0); //we apply phtMask here, dependence is further away
 
